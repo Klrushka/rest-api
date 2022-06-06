@@ -4,7 +4,7 @@ const {v4} = require('uuid')
 const app = express()
 
 
-const CONTACTS = [
+let CONTACTS = [
     {id: v4(), name: 'Kiryl', value: '+375293567481', marked: false}
 
 ]
@@ -17,6 +17,11 @@ app.get('/api/contacts', (req, res) => {
     res.status(200).json(CONTACTS)
 })
 
+//DELETE
+app.delete('/api/contacts:id', (req, res) => {
+    CONTACTS = CONTACTS.filter(c => c.id !== req.params.id)
+    res.status(200).json({message: 'contact deleted'})
+})
 
 //POST
 app.post('/api/contacts', (req, res) =>{
@@ -27,6 +32,13 @@ app.post('/api/contacts', (req, res) =>{
 
 })
 
+//PUT
+app.put('/api/contacts:id', (req, res) => {
+    const idx = CONTACTS.findIndex(c => c.id === req.params.id)
+    CONTACTS[idx] = req.body
+    res.json(CONTACTS[idx])
+})
+
 
 app.use(express.static(path.resolve(__dirname, 'client')))
 
@@ -34,5 +46,5 @@ app.listen(3000, () => console.log('Server started'))
 
 
 app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'client', 'index.hml'))
+    res.sendFile(path.resolve(__dirname, 'client', 'index.html'))
 })

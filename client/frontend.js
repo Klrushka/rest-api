@@ -31,15 +31,23 @@ new Vue({
         async createContact() {
             const {...contact} = this.form
 
-            const newContact =  await request('/api/contacts', 'POST', contact)
+            const newContact = await request('/api/contacts', 'POST', contact)
 
             this.contacts.push(newContact)
+
+            this.form.name = this.form.value = ''
         },
-        markContact(id) {
+        async markContact(id) {
             const contact = this.contacts.find(c => c.id === id)
-            contact.marked = true
+            // contact.marked = true
+            await request(`/api/contacts/${id}`, 'PUT', {
+                ...contact,
+                marked: true
+            })
+
         },
-        removeContact(id) {
+        async removeContact(id) {
+            await request(`api/contacts/${id}`)
             this.contacts = this.contacts.filter(c => c.id !== id)
         },
 
